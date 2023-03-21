@@ -2,22 +2,42 @@ name: Test
 on:
   push
 jobs:
-  test:
+  test1:
+    name: ${{ matrix.os }}-no-defender
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
-          - ubuntu-20.04
-          - macos-11
-          - macos-12
-          - windows-2022
           - windows-2019
-    runs-on: ${{ matrix.os }}
+          - windows-2022
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          repository: cue-lang/cue
-          ref: d16b5758c12d752c439a78f51baabace69268af7
-          fetch-depth: 0
+    - run: Set-MpPreference -DisableRealtimeMonitoring $true
+      shell: powershell
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        repository: cue-lang/cue
+        ref: d16b5758c12d752c439a78f51baabace69268af7
+        fetch-depth: 0
+    - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
+      shell: powershell
+
+  test2:
+    name: ${{ matrix.os }}-defender
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2019
+          - windows-2022
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        repository: cue-lang/cue
+        ref: d16b5758c12d752c439a78f51baabace69268af7
+        fetch-depth: 0
+    - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
+      shell: powershell
