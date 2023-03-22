@@ -19,6 +19,7 @@ jobs:
     - run: Set-MpPreference -DisableRealtimeMonitoring $true
       shell: powershell
     - run: |
+        Get-ChildItem -Path (Get-Location).Path -Recurse 
         Get-Date
         $c = (Join-Path (Get-Location).Path '.github\t.cmd')
         & "$c"
