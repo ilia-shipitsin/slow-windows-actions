@@ -12,6 +12,10 @@ jobs:
           - windows-2019
           - windows-2022
     steps:
+    - run: fsutil 8dot3name query
+      shell: powershell
+    - run: fsutil 8dot3name set 1
+      shell: powershell
     - run: Set-MpPreference -DisableRealtimeMonitoring $true
       shell: powershell
     - name: Checkout code
