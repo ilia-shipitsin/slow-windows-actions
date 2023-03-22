@@ -21,7 +21,7 @@ jobs:
     - run: |
         Get-Date
         $c = (Join-Path (Get-Location).Path '.github\t.cmd')
-        "$c"
+        & "$c"
         Get-Date
       shell: powershell
     - name: Checkout code
