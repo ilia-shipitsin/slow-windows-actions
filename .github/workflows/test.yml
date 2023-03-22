@@ -18,7 +18,9 @@ jobs:
       shell: powershell
     - run: Set-MpPreference -DisableRealtimeMonitoring $true
       shell: powershell
-    - run: Measure-Command{ & (Join-Path (Get-Location).Path '.github\t.cmd') }
+    - run: |
+        $c = (Join-Path (Get-Location).Path '.github\t.cmd')
+        Measure-Command{ &$c }
       shell: powershell
     - name: Checkout code
       uses: actions/checkout@v3
