@@ -18,6 +18,8 @@ jobs:
       shell: powershell
     - run: Set-MpPreference -DisableRealtimeMonitoring $true
       shell: powershell
+    - run: Measure-Command{ .github\t.cmd }
+      shell: powershell
     - name: Checkout code
       uses: actions/checkout@v3
       with:
