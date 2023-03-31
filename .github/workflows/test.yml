@@ -11,6 +11,8 @@ jobs:
         os:
           - windows-2022
     steps:
+    - run: Get-NetTransportFilter
+      shell: powershell
     - run: fsutil 8dot3name query
       shell: powershell
     - run: fsutil 8dot3name set 1
