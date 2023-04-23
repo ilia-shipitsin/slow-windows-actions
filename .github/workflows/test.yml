@@ -11,6 +11,10 @@ jobs:
         os:
           - windows-2022
     steps:
+    
+    - run: set
+      shell: cmd
+    
     - run: Get-NetTransportFilter
       shell: powershell
     - run: fsutil 8dot3name query
