@@ -3,13 +3,8 @@ on:
   push
 jobs:
   test1:
-    name: ${{ matrix.os }}-no-defender
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - windows-2022
+    name: windows-2022-no-defender
+    runs-on: windows-2022
     steps:
     
     - run: jq
@@ -23,8 +18,6 @@ jobs:
       shell: powershell
     - run: Set-MpPreference -DisableRealtimeMonitoring $true
       shell: powershell
-    #- run: Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableSmartScreen' -Type DWord -Value 0
-    #  shell: powershell
     - run: |
         Invoke-WebRequest -Uri 'https://gist.githubusercontent.com/ilia-shipitsin/765d1cc5d5521360d3e5c3c123942f26/raw/1deaf3e9b85b70f9d4cb55424324187982cb34ed/gistfile1.txt' -OutFile 't.cmd'
         $c = (Join-Path (Get-Location).Path 't.cmd')
@@ -40,3 +33,35 @@ jobs:
     - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
       shell: powershell
 
+  test2:
+    name: windows-2022-no-defender-no-smartscreen
+    runs-on: windows-2022
+    steps:
+    
+    - run: jq
+      shell: cmd
+    
+    - run: Get-NetTransportFilter
+      shell: powershell
+    - run: fsutil 8dot3name query
+      shell: powershell
+    - run: fsutil 8dot3name set 1
+      shell: powershell
+    - run: Set-MpPreference -DisableRealtimeMonitoring $true
+      shell: powershell
+    - run: Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableSmartScreen' -Type DWord -Value 0
+      shell: powershell
+    - run: |
+        Invoke-WebRequest -Uri 'https://gist.githubusercontent.com/ilia-shipitsin/765d1cc5d5521360d3e5c3c123942f26/raw/1deaf3e9b85b70f9d4cb55424324187982cb34ed/gistfile1.txt' -OutFile 't.cmd'
+        $c = (Join-Path (Get-Location).Path 't.cmd')
+        $elapsed = (Measure-Command{ & "$c" }).TotalMilliseconds
+        Write-Host "Git checkout (ms): $elapsed"
+      shell: powershell
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        repository: cue-lang/cue
+        ref: d16b5758c12d752c439a78f51baabace69268af7
+        fetch-depth: 0
+    - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
+      shell: powershell
