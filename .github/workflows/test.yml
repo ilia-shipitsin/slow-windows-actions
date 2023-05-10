@@ -3,7 +3,7 @@ on:
   push
 jobs:
   test1:
-    name: windows-2022-no-defender
+    name: windows-2022-no-defender-no-smartscreen
     runs-on: windows-2022
     steps:
     
@@ -11,47 +11,6 @@ jobs:
        jq
        choco install windows-performance-toolkit
        "C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -start -on LOADER+PROC_THREAD+DISK_IO+HARD_FAULTS+DPC+INTERRUPT+CSWITCH+PERF_COUNTER+FILE_IO_INIT+REGISTRY
-      shell: cmd
-    
-    - run: Get-NetTransportFilter
-      shell: powershell
-    - run: fsutil 8dot3name query
-      shell: powershell
-    - run: fsutil 8dot3name set 1
-      shell: powershell
-    - run: Set-MpPreference -DisableRealtimeMonitoring $true
-      shell: powershell
-    - run: |
-        Invoke-WebRequest -Uri 'https://gist.githubusercontent.com/ilia-shipitsin/765d1cc5d5521360d3e5c3c123942f26/raw/1deaf3e9b85b70f9d4cb55424324187982cb34ed/gistfile1.txt' -OutFile 't.cmd'
-        $c = (Join-Path (Get-Location).Path 't.cmd')
-        $elapsed = (Measure-Command{ & "$c" }).TotalMilliseconds
-        Write-Host "Git checkout (ms): $elapsed"
-      shell: powershell
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        repository: cue-lang/cue
-        ref: d16b5758c12d752c439a78f51baabace69268af7
-        fetch-depth: 0
-    - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
-      shell: powershell
-      
-    - run: |
-        "c:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -stop
-      shell: cmd
-
-    - name: Archive ETL
-      uses: actions/upload-artifact@v3
-      with:
-        name: WPP
-        path: c:\kernel.etl
-
-  test2:
-    name: windows-2022-no-defender-no-smartscreen
-    runs-on: windows-2022
-    steps:
-    
-    - run: jq
       shell: cmd
     
     - run: Get-NetTransportFilter
@@ -78,3 +37,14 @@ jobs:
         fetch-depth: 0
     - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
       shell: powershell
+      
+    - run: |
+        "c:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -stop
+      shell: cmd
+
+    - name: Archive ETL
+      uses: actions/upload-artifact@v3
+      with:
+        name: WPP
+        path: D:\kernel.etl
+
