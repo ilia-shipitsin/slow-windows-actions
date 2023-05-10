@@ -7,7 +7,10 @@ jobs:
     runs-on: windows-2022
     steps:
     
-    - run: jq
+    - run: |
+       jq
+       choco install windows-performance-toolkit
+       "C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -start -on LOADER+PROC_THREAD+DISK_IO+HARD_FAULTS+DPC+INTERRUPT+CSWITCH+PERF_COUNTER+FILE_IO_INIT+REGISTRY
       shell: cmd
     
     - run: Get-NetTransportFilter
@@ -32,6 +35,16 @@ jobs:
         fetch-depth: 0
     - run: Get-WinEvent @{ProviderName='Microsoft-Windows-Windows Defender'}
       shell: powershell
+      
+    - run: |
+        "c:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -stop
+      shell: cmd
+
+    - name: Archive ETL
+      uses: actions/upload-artifact@v3
+      with:
+        name: WPP
+        path: c:\kernel.etl
 
   test2:
     name: windows-2022-no-defender-no-smartscreen
