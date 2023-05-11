@@ -10,7 +10,7 @@ jobs:
     - run: |
        jq
        choco install windows-performance-toolkit
-       "C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -save tmp.etl -on LOADER+PROC_THREAD+DISK_IO+HARD_FAULTS+DPC+INTERRUPT+CSWITCH+PERF_COUNTER+FILE_IO_INIT+REGISTRY
+       "C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -start -on LOADER+PROC_THREAD+DISK_IO+HARD_FAULTS+DPC+INTERRUPT+CSWITCH+PERF_COUNTER+FILE_IO_INIT+REGISTRY
       shell: cmd
     
     - run: Get-NetTransportFilter
@@ -39,7 +39,7 @@ jobs:
       shell: powershell
       
     - run: |
-        "c:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -stop
+        "c:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\xperf.exe" -d tmp.etl
       shell: cmd
 
     - name: Archive ETL
